@@ -1,0 +1,25 @@
+# Copy to agents/expenses/config.yaml (git-ignored) and fill in.
+# On the Pi, point EXPENSES_CONFIG at /etc/pi-agents/expenses.yaml instead.
+
+payday: 28            # moved to the previous business day on weekends/holidays
+
+# data_dir: /var/lib/pi-agents/expenses   # default: $STATE_DIRECTORY (systemd) or ./data
+
+mail:
+  source: graph       # graph (Outlook / Microsoft 365) | imap (e.g. dedicated Gmail)
+  poll_seconds: 60
+  graph:
+    client_id: "00000000-0000-0000-0000-000000000000"   # from your Entra app registration (docs/SETUP.md)
+    authority: https://login.microsoftonline.com/organizations
+    folder: Gastos    # Outlook folder your rule moves bank emails into
+  # imap:
+  #   host: imap.gmail.com
+  #   user: you.gastos@gmail.com
+  #   folder: Gastos
+  #   password_env: IMAP_PASSWORD   # app password, set in /etc/pi-agents/expenses.env
+
+capture:
+  enabled: true       # save redacted bank/merchant emails to <data_dir>/samples/
+  sender_domains: [bancochile.cl, bice.cl, rappi.com, rappi.cl, copec.cl]
+  redact_names: ["Juan Lorca"]
+  redact_emails: []   # the recipient address is always removed

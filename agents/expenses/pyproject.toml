@@ -1,0 +1,19 @@
+[project]
+name = "expenses"
+version = "0.1.0"
+description = "Expense tracker agent: reads bank notification emails"
+requires-python = ">=3.11"
+dependencies = [
+    "pi-core",
+    "holidays>=0.50",
+    "pydantic>=2.6",
+    "python-dateutil>=2.9",
+    "pyyaml>=6",
+]
+
+[tool.uv.sources]
+pi-core = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+*.env
+data/
+samples/
+agents/*/config.yaml
+*.redacted.eml
+msal_token_cache.json

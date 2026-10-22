@@ -1,0 +1,19 @@
+[project]
+name = "pi-ai-agent"
+version = "0.1.0"
+description = "Raspberry Pi host for personal service agents"
+requires-python = ">=3.11"
+dependencies = ["pi-core", "expenses"]
+
+[tool.uv.workspace]
+members = ["packages/*", "agents/*"]
+
+[tool.uv.sources]
+pi-core = { workspace = true }
+expenses = { workspace = true }
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages/pi_core/tests", "agents/expenses/tests"]

@@ -379,6 +379,8 @@ built into PTB), `pytest`.
 
 You can build and test milestones 2–3 on your laptop before the Pi is ready.
 
+**Status:** milestone 1 code is done: `pi_core` (Graph and IMAP sources, redaction, SQLite helpers), capture mode, pay periods, and the systemd unit, all with tests. The next step is the setup in [docs/SETUP.md](docs/SETUP.md).
+
 ---
 
 ## 8. Security and privacy

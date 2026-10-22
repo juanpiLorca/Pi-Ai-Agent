@@ -1,0 +1,30 @@
+# systemd template: one instance per agent, e.g. pi-agent@expenses.service
+# Install: sudo cp deploy/pi-agent@.service /etc/systemd/system/ && sudo systemctl daemon-reload
+[Unit]
+Description=Pi-Ai-Agent: %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=piagent
+Group=piagent
+WorkingDirectory=/opt/pi-ai-agent
+# Secrets and per-agent settings (e.g. EXPENSES_CONFIG=/etc/pi-agents/expenses.yaml)
+EnvironmentFile=-/etc/pi-agents/%i.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/pi-ai-agent/.venv/bin/python -m %i run
+# Creates /var/lib/pi-agents/<agent> and exports it as $STATE_DIRECTORY
+StateDirectory=pi-agents/%i
+StateDirectoryMode=0700
+Restart=always
+RestartSec=30
+
+# Hardening: the agent only needs to write its own state directory
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

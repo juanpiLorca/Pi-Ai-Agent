@@ -43,6 +43,26 @@ The Pi needs a "client ID" to sign in to Microsoft Graph as you.
 - **At login (step 5), "Need admin approval" / "Approval required":** UC doesn't let
   users approve third-party apps. Use the IMAP fallback (section 7).
 
+## 3b. Optional: test on your laptop first
+This checks that UC allows the login before you set up the Pi. You need `git`.
+
+```bash
+# Install uv (it brings its own Python)
+#   macOS/Linux:  curl -LsSf https://astral.sh/uv/install.sh | sh
+#   Windows (PowerShell):  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+git clone -b claude/chile-expense-tracker-qe08ok https://github.com/juanpiLorca/Pi-Ai-Agent.git
+cd Pi-Ai-Agent
+uv sync
+cp agents/expenses/config.example.yaml agents/expenses/config.yaml   # Windows: copy ...
+# Edit agents/expenses/config.yaml and paste your client_id from step 3
+
+uv run python -m expenses login        # enter the code it prints at microsoft.com/devicelogin
+uv run python -m expenses fetch-once   # -> "N new message(s). Samples in data/samples"
+```
+Everything stays in the repo's `data/` folder, which git ignores. Open a file in
+`data/samples/` to check the redaction. When you move to the Pi, delete `data/`.
+The Pi does its own login.
+
 ## 4. Install on the Raspberry Pi
 Use Raspberry Pi OS Lite 64-bit, preferably booting from a USB SSD.
 

@@ -6,17 +6,17 @@ payday: 28            # moved to the previous business day on weekends/holidays
 # data_dir: /var/lib/pi-agents/expenses   # default: $STATE_DIRECTORY (systemd) or ./data
 
 mail:
-  source: graph       # graph (Outlook / Microsoft 365) | imap (e.g. dedicated Gmail)
+  source: imap        # imap (dedicated Gmail, app password) | graph (Outlook via Microsoft Graph)
   poll_seconds: 60
-  graph:
-    client_id: "00000000-0000-0000-0000-000000000000"   # from your Entra app registration (docs/SETUP.md)
-    authority: https://login.microsoftonline.com/organizations
-    folder: Gastos    # Outlook folder your rule moves bank emails into
-  # imap:
-  #   host: imap.gmail.com
-  #   user: you.gastos@gmail.com
+  imap:
+    host: imap.gmail.com
+    user: your.gastos.address@gmail.com
+    folder: Gastos                  # the Gmail label your filter applies
+    password_env: IMAP_PASSWORD     # the app password is read from this environment variable
+  # graph:            # only if you can register an Entra app (docs/SETUP.md, appendix)
+  #   client_id: "00000000-0000-0000-0000-000000000000"
+  #   authority: https://login.microsoftonline.com/consumers   # Outlook.com; "organizations" for work/school
   #   folder: Gastos
-  #   password_env: IMAP_PASSWORD   # app password, set in /etc/pi-agents/expenses.env
 
 capture:
   enabled: true       # save redacted bank/merchant emails to <data_dir>/samples/

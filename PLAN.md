@@ -101,6 +101,8 @@ The bank emails currently arrive at an **Outlook mailbox (`@uc.cl`, a Microsoft
     need IT approval.
   - It may block automatic forwarding to outside addresses.
   - The account may be closed when you leave the university.
+- **Update (Oct 2026):** UC doesn't let users register apps, so the agent uses option 2
+  (a dedicated Gmail account over IMAP). See docs/SETUP.md.
 - **Decision:** write ingestion behind a `MailSource` interface with two
   implementations:
   1. `GraphMailSource`: use it now with `@uc.cl`. If login works, you're done.
@@ -423,7 +425,7 @@ parsers need: amounts, merchants, dates, and the HTML structure.
 
 | Question | Decision |
 |---|---|
-| Email provider | Outlook / Microsoft 365 (`@uc.cl`) via the Graph API now. IMAP with a dedicated mailbox is the fallback, and the long-term home. |
+| Email provider | A **dedicated Gmail account over IMAP** (app password). The banks, Rappi and Copec send to it. UC's Microsoft 365 doesn't let users register apps, so the Graph route stays as an unused option. |
 | Host | Raspberry Pi, as a multi-agent host with systemd units |
 | Banks | Banco de Chile and BICE, plus Rappi and Copec receipt enrichment |
 | Output | A local Excel file on the Pi, available through `/excel` and a Samba share |

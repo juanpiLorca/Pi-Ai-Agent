@@ -18,14 +18,17 @@ class ImapMailSource:
         self._pending: tuple[str, int] | None = None
 
     async def fetch_new(self) -> list[MailMessage]:
-        return await asyncio.to_thread(self._fetch)
+        # State is read here, not in the worker thread: a sqlite connection belongs to its thread.
+        known_validity = self.state.get(f"{self._key}.uidvalidity")
+        last_uid = int(self.state.get(f"{self._key}.last_uid", "0") or 0)
+        messages, self._pending = await asyncio.to_thread(self._fetch, known_validity, last_uid)
+        return messages
 
-    def _fetch(self) -> list[MailMessage]:
-        with MailBox(self.host, self.port).login(self.user, self.password, initial_folder=self.folder) as mb:
+    def _fetch(self, known_validity: str | None, last_uid: int) -> tuple[list[MailMessage], tuple[str, int]]:
+        with MailBox(self.host, self.port, timeout=60).login(self.user, self.password, initial_folder=self.folder) as mb:
             # UIDs are only meaningful together with UIDVALIDITY; if it changes, start over.
             validity = str(mb.folder.status(self.folder, ["UIDVALIDITY"])["UIDVALIDITY"])
-            last_uid = int(self.state.get(f"{self._key}.last_uid", "0") or 0)
-            if self.state.get(f"{self._key}.uidvalidity") != validity:
+            if validity != known_validity:
                 last_uid = 0
             messages = []
             new_last = last_uid
@@ -35,8 +38,7 @@ class ImapMailSource:
                     continue
                 messages.append(message_from_raw(msg.obj.as_bytes()))
                 new_last = max(new_last, uid)
-        self._pending = (validity, new_last)
-        return messages
+        return messages, (validity, new_last)
 
     def commit(self) -> None:
         if self._pending:
